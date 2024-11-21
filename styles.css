@@ -85,6 +85,27 @@ h1 {
     background: #f5f5f5;
     padding: 1rem;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    position: relative;
+    min-height: 200px;
+}
+
+#question-image.loading::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 30px;
+    height: 30px;
+    margin: -15px 0 0 -15px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #2a5298;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 
 #question-image img {
@@ -94,6 +115,12 @@ h1 {
     object-fit: contain;
     aspect-ratio: 4/3;
     background: white;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+#question-image img.loaded {
+    opacity: 1;
 }
 
 .options-container {

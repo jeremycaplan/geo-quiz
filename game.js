@@ -15,11 +15,36 @@ const gameData = {
         { question: "Which country's flag is this?", image: "https://raw.githubusercontent.com/lipis/flag-icons/main/flags/4x3/za.svg", answer: "South Africa", options: ["Kenya", "Nigeria", "South Africa", "Egypt"] }
     ],
     landmarks: [
-        { question: "Which famous landmark is this?", image: "https://images.unsplash.com/photo-1499856871958-5b9627545d1a", answer: "Eiffel Tower", options: ["Big Ben", "Eiffel Tower", "Statue of Liberty", "Tower Bridge"] },
-        { question: "Which famous landmark is this?", image: "https://images.unsplash.com/photo-1587495504299-ea5c91d97798", answer: "Taj Mahal", options: ["Taj Mahal", "Angkor Wat", "Petra", "Hagia Sophia"] },
-        { question: "Which famous landmark is this?", image: "https://images.unsplash.com/photo-1590114538379-921188f9689d", answer: "Great Wall of China", options: ["Hadrian's Wall", "Great Wall of China", "Machu Picchu", "Petra"] },
-        { question: "Which famous landmark is this?", image: "https://images.unsplash.com/photo-1555992336-fb0d29498b13", answer: "Colosseum", options: ["Parthenon", "Colosseum", "Acropolis", "Roman Forum"] },
-        { question: "Which famous landmark is this?", image: "https://images.unsplash.com/photo-1526392060635-9d6019884377", answer: "Sydney Opera House", options: ["Sydney Opera House", "Royal Albert Hall", "La Scala", "Metropolitan Opera"] }
+        { 
+            question: "Which famous landmark is this?", 
+            image: "https://images.unsplash.com/photo-1543349689-9a4d426bee8e?auto=format&fit=crop&w=800&q=80", 
+            answer: "Eiffel Tower", 
+            options: ["Big Ben", "Eiffel Tower", "Statue of Liberty", "Tower Bridge"]
+        },
+        { 
+            question: "Which famous landmark is this?", 
+            image: "https://images.unsplash.com/photo-1564507592333-c60657eea523?auto=format&fit=crop&w=800&q=80", 
+            answer: "Taj Mahal", 
+            options: ["Taj Mahal", "Angkor Wat", "Petra", "Hagia Sophia"]
+        },
+        { 
+            question: "Which famous landmark is this?", 
+            image: "https://images.unsplash.com/photo-1508804185872-d7badad00f7d?auto=format&fit=crop&w=800&q=80", 
+            answer: "Great Wall of China", 
+            options: ["Hadrian's Wall", "Great Wall of China", "Machu Picchu", "Petra"]
+        },
+        { 
+            question: "Which famous landmark is this?", 
+            image: "https://images.unsplash.com/photo-1552832230-c0197dd311b5?auto=format&fit=crop&w=800&q=80", 
+            answer: "Colosseum", 
+            options: ["Parthenon", "Colosseum", "Acropolis", "Roman Forum"]
+        },
+        { 
+            question: "Which famous landmark is this?", 
+            image: "https://images.unsplash.com/photo-1624138784614-87fd1b6528f8?auto=format&fit=crop&w=800&q=80", 
+            answer: "Sydney Opera House", 
+            options: ["Sydney Opera House", "Royal Albert Hall", "La Scala", "Metropolitan Opera"]
+        }
     ]
 };
 
@@ -104,19 +129,32 @@ function displayQuestion() {
     
     if (question.image) {
         questionImage.style.display = 'block';
-        const img = document.createElement('img');
-        img.src = question.image;
-        img.alt = "Quiz Image";
-        img.style.maxWidth = '100%';
-        img.style.height = 'auto';
-        img.style.borderRadius = '10px';
-        img.style.marginBottom = '20px';
+        questionImage.classList.add('loading');
         
-        // Add error handling for images
-        img.onerror = () => {
-            img.src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="150" viewBox="0 0 200 150"><rect width="100%" height="100%" fill="%23f0f0f0"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-family="Arial" font-size="14" fill="%23999">Image not available</text></svg>';
+        const img = document.createElement('img');
+        img.alt = "Quiz Image";
+        
+        img.onload = () => {
+            questionImage.classList.remove('loading');
+            img.classList.add('loaded');
         };
         
+        img.onerror = () => {
+            questionImage.classList.remove('loading');
+            img.src = 'data:image/svg+xml,' + encodeURIComponent(`
+                <svg xmlns="http://www.w3.org/2000/svg" width="200" height="150" viewBox="0 0 200 150">
+                    <rect width="100%" height="100%" fill="#f0f0f0"/>
+                    <text x="50%" y="45%" dominant-baseline="middle" text-anchor="middle" font-family="Arial" font-size="14" fill="#999">
+                        Image not available
+                    </text>
+                    <text x="50%" y="55%" dominant-baseline="middle" text-anchor="middle" font-family="Arial" font-size="12" fill="#666">
+                        Please try refreshing
+                    </text>
+                </svg>
+            `);
+        };
+        
+        img.src = question.image;
         questionImage.innerHTML = '';
         questionImage.appendChild(img);
     } else {
