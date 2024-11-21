@@ -8,11 +8,11 @@ const gameData = {
         { question: "What is the capital of Egypt?", answer: "Cairo", options: ["Cairo", "Alexandria", "Luxor", "Giza"] }
     ],
     flags: [
-        { question: "Which country's flag is this?", image: "https://flagcdn.com/w320/fr.png", answer: "France", options: ["Netherlands", "France", "Italy", "Russia"] },
-        { question: "Which country's flag is this?", image: "https://flagcdn.com/w320/jp.png", answer: "Japan", options: ["South Korea", "China", "Japan", "Vietnam"] },
-        { question: "Which country's flag is this?", image: "https://flagcdn.com/w320/br.png", answer: "Brazil", options: ["Argentina", "Colombia", "Brazil", "Mexico"] },
-        { question: "Which country's flag is this?", image: "https://flagcdn.com/w320/gb.png", answer: "United Kingdom", options: ["United States", "Australia", "New Zealand", "United Kingdom"] },
-        { question: "Which country's flag is this?", image: "https://flagcdn.com/w320/za.png", answer: "South Africa", options: ["Kenya", "Nigeria", "South Africa", "Egypt"] }
+        { question: "Which country's flag is this?", image: "https://raw.githubusercontent.com/lipis/flag-icons/main/flags/4x3/fr.svg", answer: "France", options: ["Netherlands", "France", "Italy", "Russia"] },
+        { question: "Which country's flag is this?", image: "https://raw.githubusercontent.com/lipis/flag-icons/main/flags/4x3/jp.svg", answer: "Japan", options: ["South Korea", "China", "Japan", "Vietnam"] },
+        { question: "Which country's flag is this?", image: "https://raw.githubusercontent.com/lipis/flag-icons/main/flags/4x3/br.svg", answer: "Brazil", options: ["Argentina", "Colombia", "Brazil", "Mexico"] },
+        { question: "Which country's flag is this?", image: "https://raw.githubusercontent.com/lipis/flag-icons/main/flags/4x3/gb.svg", answer: "United Kingdom", options: ["United States", "Australia", "New Zealand", "United Kingdom"] },
+        { question: "Which country's flag is this?", image: "https://raw.githubusercontent.com/lipis/flag-icons/main/flags/4x3/za.svg", answer: "South Africa", options: ["Kenya", "Nigeria", "South Africa", "Egypt"] }
     ],
     landmarks: [
         { question: "Which famous landmark is this?", image: "https://images.unsplash.com/photo-1499856871958-5b9627545d1a", answer: "Eiffel Tower", options: ["Big Ben", "Eiffel Tower", "Statue of Liberty", "Tower Bridge"] },
@@ -104,7 +104,21 @@ function displayQuestion() {
     
     if (question.image) {
         questionImage.style.display = 'block';
-        questionImage.innerHTML = `<img src="${question.image}" alt="Quiz Image" style="max-width: 100%; height: auto;">`;
+        const img = document.createElement('img');
+        img.src = question.image;
+        img.alt = "Quiz Image";
+        img.style.maxWidth = '100%';
+        img.style.height = 'auto';
+        img.style.borderRadius = '10px';
+        img.style.marginBottom = '20px';
+        
+        // Add error handling for images
+        img.onerror = () => {
+            img.src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="150" viewBox="0 0 200 150"><rect width="100%" height="100%" fill="%23f0f0f0"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-family="Arial" font-size="14" fill="%23999">Image not available</text></svg>';
+        };
+        
+        questionImage.innerHTML = '';
+        questionImage.appendChild(img);
     } else {
         questionImage.style.display = 'none';
     }
