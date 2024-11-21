@@ -17,31 +17,36 @@ const gameData = {
     landmarks: [
         { 
             question: "Which famous landmark is this?", 
-            image: "https://images.unsplash.com/photo-1543349689-9a4d426bee8e?auto=format&fit=crop&w=800&q=80", 
+            image: "https://images.unsplash.com/photo-1543349689-9a4d426bee8e?auto=format&fit=crop&w=600&q=60&blur=5", 
+            fullImage: "https://images.unsplash.com/photo-1543349689-9a4d426bee8e?auto=format&fit=crop&w=800&q=80",
             answer: "Eiffel Tower", 
             options: ["Big Ben", "Eiffel Tower", "Statue of Liberty", "Tower Bridge"]
         },
         { 
             question: "Which famous landmark is this?", 
-            image: "https://images.unsplash.com/photo-1564507592333-c60657eea523?auto=format&fit=crop&w=800&q=80", 
+            image: "https://images.unsplash.com/photo-1564507592333-c60657eea523?auto=format&fit=crop&w=600&q=60&blur=5",
+            fullImage: "https://images.unsplash.com/photo-1564507592333-c60657eea523?auto=format&fit=crop&w=800&q=80",
             answer: "Taj Mahal", 
             options: ["Taj Mahal", "Angkor Wat", "Petra", "Hagia Sophia"]
         },
         { 
             question: "Which famous landmark is this?", 
-            image: "https://images.unsplash.com/photo-1508804185872-d7badad00f7d?auto=format&fit=crop&w=800&q=80", 
+            image: "https://images.unsplash.com/photo-1508804185872-d7badad00f7d?auto=format&fit=crop&w=600&q=60&blur=5",
+            fullImage: "https://images.unsplash.com/photo-1508804185872-d7badad00f7d?auto=format&fit=crop&w=800&q=80",
             answer: "Great Wall of China", 
             options: ["Hadrian's Wall", "Great Wall of China", "Machu Picchu", "Petra"]
         },
         { 
             question: "Which famous landmark is this?", 
-            image: "https://images.unsplash.com/photo-1552832230-c0197dd311b5?auto=format&fit=crop&w=800&q=80", 
+            image: "https://images.unsplash.com/photo-1552832230-c0197dd311b5?auto=format&fit=crop&w=600&q=60&blur=5",
+            fullImage: "https://images.unsplash.com/photo-1552832230-c0197dd311b5?auto=format&fit=crop&w=800&q=80",
             answer: "Colosseum", 
             options: ["Parthenon", "Colosseum", "Acropolis", "Roman Forum"]
         },
         { 
             question: "Which famous landmark is this?", 
-            image: "https://images.unsplash.com/photo-1624138784614-87fd1b6528f8?auto=format&fit=crop&w=800&q=80", 
+            image: "https://images.unsplash.com/photo-1624138784614-87fd1b6528f8?auto=format&fit=crop&w=600&q=60&blur=5",
+            fullImage: "https://images.unsplash.com/photo-1624138784614-87fd1b6528f8?auto=format&fit=crop&w=800&q=80",
             answer: "Sydney Opera House", 
             options: ["Sydney Opera House", "Royal Albert Hall", "La Scala", "Metropolitan Opera"]
         }
@@ -82,6 +87,20 @@ document.querySelectorAll('.mode-btn').forEach(button => {
 document.getElementById('play-again').addEventListener('click', () => startGame(currentMode));
 document.getElementById('change-mode').addEventListener('click', showStartScreen);
 
+// Preload images for a game mode
+function preloadImages(mode) {
+    const images = gameData[mode].filter(q => q.image);
+    const imagePromises = images.map(q => {
+        return new Promise((resolve, reject) => {
+            const img = new Image();
+            img.onload = resolve;
+            img.onerror = reject;
+            img.src = q.fullImage || q.image;
+        });
+    });
+    return Promise.allSettled(imagePromises);
+}
+
 // Game Functions
 function startGame(mode) {
     currentMode = mode;
@@ -93,8 +112,12 @@ function startGame(mode) {
     
     updateScore();
     showGameScreen();
-    displayQuestion();
-    startTimer();
+    
+    // Start preloading images and show first question
+    preloadImages(mode).finally(() => {
+        displayQuestion();
+        startTimer();
+    });
 }
 
 function showStartScreen() {
@@ -134,10 +157,32 @@ function displayQuestion() {
         const img = document.createElement('img');
         img.alt = "Quiz Image";
         
-        img.onload = () => {
-            questionImage.classList.remove('loading');
-            img.classList.add('loaded');
-        };
+        // First load the low-quality image
+        if (question.fullImage) {
+            const lowQualityImg = new Image();
+            lowQualityImg.onload = () => {
+                img.src = question.image;
+                questionImage.innerHTML = '';
+                questionImage.appendChild(img);
+                
+                // Then load the high-quality image
+                const highQualityImg = new Image();
+                highQualityImg.onload = () => {
+                    img.src = question.fullImage;
+                    questionImage.classList.remove('loading');
+                    img.classList.add('loaded');
+                };
+                highQualityImg.src = question.fullImage;
+            };
+            lowQualityImg.src = question.image;
+        } else {
+            // For SVG flags, load directly
+            img.onload = () => {
+                questionImage.classList.remove('loading');
+                img.classList.add('loaded');
+            };
+            img.src = question.image;
+        }
         
         img.onerror = () => {
             questionImage.classList.remove('loading');
@@ -154,7 +199,6 @@ function displayQuestion() {
             `);
         };
         
-        img.src = question.image;
         questionImage.innerHTML = '';
         questionImage.appendChild(img);
     } else {
