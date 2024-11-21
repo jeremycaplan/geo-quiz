@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GeoQuest - Geography Quiz Game</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="game-container">
+        <div id="start-screen" class="screen">
+            <h1>GeoQuest</h1>
+            <p>Test your geography knowledge!</p>
+            <div class="game-modes">
+                <button class="mode-btn" data-mode="capitals">Capital Cities</button>
+                <button class="mode-btn" data-mode="flags">Flag Quiz</button>
+                <button class="mode-btn" data-mode="landmarks">Famous Landmarks</button>
+            </div>
+        </div>
+
+        <div id="game-screen" class="screen hidden">
+            <div class="header">
+                <div class="score">Score: <span id="score">0</span></div>
+                <div class="timer">Time: <span id="timer">30</span>s</div>
+            </div>
+
+            <div class="question-container">
+                <div id="question-text"></div>
+                <div id="question-image"></div>
+                <div class="options-container">
+                    <!-- Options will be populated by JavaScript -->
+                </div>
+            </div>
+
+            <div class="progress-bar">
+                <div class="progress"></div>
+            </div>
+        </div>
+
+        <div id="result-screen" class="screen hidden">
+            <h2>Game Over!</h2>
+            <div class="final-score">Final Score: <span id="final-score">0</span></div>
+            <div class="high-score">High Score: <span id="high-score">0</span></div>
+            <button id="play-again" class="btn">Play Again</button>
+            <button id="change-mode" class="btn">Change Mode</button>
+        </div>
+    </div>
+    <script src="game.js"></script>
+</body>
+</html>
